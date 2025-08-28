@@ -1,40 +1,43 @@
-"use client";
-
+'use client';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useFormState } from 'react-dom';
+
 import { signup } from '@/actions/AuthActions';
 
-export default function AuthForm() {
-  const [formState, formAction] = useFormState(signup, { errors: {} });
-
+export default function AuthForm({ mode }) {
+  const [formState, formAction] = useFormState(signup, {});
   return (
     <form id="auth-form" action={formAction}>
       <div>
-        <Image src="/images/auth-icon.jpg" alt="A lock icon" width={64} height={64} />
+        <img src="/images/auth-icon.jpg" alt="A lock icon" />
       </div>
       <p>
         <label htmlFor="email">Email</label>
-        <input type="email" name="email" id="email" required />
+        <input type="email" name="email" id="email" />
       </p>
       <p>
         <label htmlFor="password">Password</label>
-        <input type="password" name="password" id="password" required />
+        <input type="password" name="password" id="password" />
       </p>
-
-      {formState.errors && Object.keys(formState.errors).length > 0 && (
+      {formState.errors && (
         <ul id="form-errors">
-          {Object.keys(formState.errors).map((key) => (
-            <li key={key}>{formState.errors[key]}</li>
+          {Object.keys(formState.errors).map((error) => (
+            <li key={error}>{formState.errors[error]}</li>
           ))}
         </ul>
       )}
-
       <p>
-        <button type="submit">Create Account</button>
+        <button type="submit">
+          {mode === 'login' ? 'Login' : 'Create Account'}
+        </button>
       </p>
       <p>
-        <Link href="/">Login with existing account</Link>
+        {mode === 'login' && (
+          <Link href="/?mode=signup">Create an account.</Link>
+        )}
+        {mode === 'signup' && (
+          <Link href="/?mode=login">Login with existing account.</Link>
+        )}
       </p>
     </form>
   );
